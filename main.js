@@ -24,9 +24,58 @@ const get_voices = () => {
   option.setAttribute('data-name', voice.name);
   voice_select.appendChild(option); 
  });
-}
+};
 
 get_voices();
 if (synth.onvoiceschanged !== undefined) {
  synth.onvoiceschanged = get_voices;
 }
+
+//speak
+const speak = () => {
+ //runs as soon as 'language / voice' is selected or 'speak it' is clicked
+ //check if already speaking
+ if (synth.speaking) {
+  console.error('already speaking...');
+  return;
+ }
+ if (text_input.value !== '') {
+  //get speak text
+  const speak_text = new SpeechSynthesisUtterance(text_input.value);
+  //speak end
+  speak_text.onend = e => {
+   console.log('done speaking...');
+  }
+  //speak error
+  speak_text.onerror = e => {
+   console.error('something went wrong :(');
+  }
+  //specify voice to use
+  const selected_voice = voice_select.selectedOptions[0].getAttribute('data-name');
+  //loop through voices
+  voices.forEach(voice => {
+   if (voice.name === selected_voice) {
+    speak_text.voice = voice;
+   }
+  });
+  //set rate and pitch
+  speak_text.rate = rate.value;
+  speak_text.pitch = pitch.value;
+  //speak
+  synth.speak(speak_text);
+ }
+};
+
+//event listeners
+//1. form submission
+text_form.addEventListener('submit', e => {
+ e.preventDefault();
+ speak();
+ text_input.blur();
+});
+//rate value change
+rate.addEventListener('change', e => rate_val.textContent = rate.value);
+//pitch value change
+pitch.addEventListener('change', e => pitch_val.textContent = pitch.value);
+//voice select change
+voice_select.addEventListener('change', e => speak());
