@@ -79,9 +79,9 @@ text_form.addEventListener('submit', e => {
  speak();
  text_input.blur();
 });
-//rate value change
+//2. rate value change
 rate.addEventListener('change', e => rate_val.textContent = rate.value);
-//pitch value change
+//3. pitch value change
 pitch.addEventListener('change', e => pitch_val.textContent = pitch.value);
-//voice select change
+//4. voice select change
 voice_select.addEventListener('change', e => speak());
